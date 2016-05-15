@@ -1,0 +1,7 @@
+{
+  "name": "ThinkParticle",
+  "author": "Steve Harris <steve@thinkautomatic.io>",
+  "license": "MIT",
+  "version": "0.2.0",
+  "description": "Particle library for integration with Think Automatic machine learning platform."
+}
