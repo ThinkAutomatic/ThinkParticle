@@ -1,8 +1,7 @@
 #include "application.h"
 #include "ThinkParticle/ThinkParticle.h"
 
-int led = D7; // Instead of writing D0 over and over again, we'll write led1
-// You'll need to wire an LED to this one to see it blink.
+int led = D7; 
 
 int button = D6; 
 bool buttonPressed = FALSE;
