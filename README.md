@@ -7,18 +7,7 @@ This library enables Particle.io devices such as the Photon to easily integrate 
 
 ### Prerequisite
 
-Install and run the ThinkHub proxy via npm and Node.js on any machine on the same LAN as your Particle device.
-```
-cd ~
-mkdir ThinkHub
-cd ThinkHub
-npm install ThinkHub
-```
-Then to run it.
-```
-node .
-```
-The <a href="https://github.com/ThinkAutomatic/ThinkHub" target="_blank">ThinkHub</a> project uses the <a href="https://github.com/ThinkAutomatic/thinkdevice" target="_blank">thinkdevice</a> module which has instructions for associating devices such as the ThinkHub to a Think Automatic account which needs to be done before ThinkParticle devices can communicate through it.
+Install and run the ThinkHub proxy on any machine on the same LAN as your Particle device. The ThinkHub project can be found <a href="https://github.com/ThinkAutomatic/ThinkHub" target="_blank">here</a>.
 
 ### Using the ThinkParticle library
 
