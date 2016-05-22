@@ -13,7 +13,7 @@ void setKeepAliveFlag()
   g_keepAliveFlag = TRUE;
 }
 
-Timer timer(15 * 60 * 1000, setKeepAliveFlag, false);
+Timer timer(15 * 60 * 1000, setKeepAliveFlag);
 
 ThinkDevice *ThinkDevice::s_thinkDevice;
 
