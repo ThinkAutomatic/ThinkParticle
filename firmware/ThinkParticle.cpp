@@ -2,18 +2,20 @@
 #include "ThinkParticle.h"
 
 #include "application.h"
+//#include "spark_wiring_tcpclient.h"
 
 #define PREFIX ""
 #define PORT 3205
 
-bool g_keepAliveFlag = TRUE;
+unsigned char g_keepAliveCounter = 0;
 
-void setKeepAliveFlag()
+void processKeepAliveCounter()
 {
-  g_keepAliveFlag = TRUE;
+  if (g_keepAliveCounter > 0)
+    g_keepAliveCounter--;
 }
 
-Timer timer(15 * 60 * 1000, setKeepAliveFlag);
+Timer timer(10 * 1000, processKeepAliveCounter);
 
 ThinkDevice *ThinkDevice::s_thinkDevice;
 
@@ -122,7 +124,7 @@ void ThinkDevice::webCmd(WebServer &server, WebServer::ConnectionType type, char
   }
   
   if (!connected && (m_hubIp != ""))
-    setKeepAliveFlag();
+    g_keepAliveCounter = 0;
 }
 
 
@@ -214,9 +216,9 @@ void ThinkDevice::process()
 
   processConnection(buff, &len);
 
-  if (g_keepAliveFlag) 
+  if (0 == g_keepAliveCounter) 
   {
-    g_keepAliveFlag = FALSE;
+    g_keepAliveCounter = 6 * 15;
     
     if (m_hubIp == "") 
     {
