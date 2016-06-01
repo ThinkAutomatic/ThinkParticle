@@ -1,8 +1,6 @@
 #ifndef __THINK_PARTICLE_H_
 #define __THINK_PARTICLE_H_
 
-#include "application.h"
-
 #include "WebServer.h"
 
 class ThinkDevice: public WebServer
