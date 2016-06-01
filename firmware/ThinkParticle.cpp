@@ -1,8 +1,6 @@
 // This #include statement was automatically added by the Particle IDE.
 #include "ThinkParticle.h"
 
-#include "application.h"
-
 #define PREFIX ""
 #define PORT 3205
 
@@ -12,8 +10,6 @@ void setKeepAliveFlag()
 {
   g_keepAliveFlag = TRUE;
 }
-
-Timer timer(15 * 60 * 1000, setKeepAliveFlag);
 
 ThinkDevice *ThinkDevice::s_thinkDevice;
 
@@ -34,6 +30,8 @@ String ThinkDevice::httpEncode(String s)
 
 void ThinkDevice::handleParams(String name, String value)
 {
+  m_connected = true;
+  
   if (name == "name")
     m_deviceName = value;
   else if (name == "deviceId")
@@ -149,7 +147,7 @@ void ThinkDevice::webLink(WebServer &server, WebServer::ConnectionType type, cha
       {
         if (String(name) == "linkToken")
         {
-          get("link", name, value);
+          patch_helper("link", name, value);
           // patch(name, value);
           success = true;
         }
@@ -187,13 +185,16 @@ ThinkDevice::ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback
   m_deviceId(""),
   m_deviceTypeUuid(deviceTypeUuid),
   m_hubIp(""),
-  m_hubPort(0)
+  m_hubPort(0),
+  m_timer(15 * 60 * 1000, setKeepAliveFlag)
 {
   m_thinkCallback = thinkCallback;
   addCommand("think", &sWebCmd);
   addCommand("link", &sWebLink);
-  timer.start();
+  m_timer.start();
   s_thinkDevice = this;
+  m_started = false;
+  m_connected = false;
 }
 
 String ThinkDevice::directUrl()
@@ -212,20 +213,31 @@ void ThinkDevice::process()
   char buff[1024];
   int len = 1024;
 
-  processConnection(buff, &len);
-
-  if (g_keepAliveFlag) 
+  if (!m_started) 
   {
-    g_keepAliveFlag = FALSE;
-    
-    if (m_hubIp == "") 
+    if (WiFi.ready())
     {
-      request("api.thinkautomatic.io", 80, "/discover?directUrl=" + directUrl(), "POST");
+      begin();
+      m_started = true;
     }
-    else 
+  }
+  else
+  {
+    processConnection(buff, &len);
+
+    if (g_keepAliveFlag) 
     {
-      // Sends keepAlive
-      patch("", "");
+      g_keepAliveFlag = FALSE;
+    
+      if (m_hubIp == "") 
+      {
+        request("api.thinkautomatic.io", 80, "/discover?directUrl=" + directUrl(), "POST");
+      }
+      else 
+      {
+        // Sends keepAlive
+        patch("", "");
+      }
     }
   }
 }
@@ -238,6 +250,7 @@ void ThinkDevice::request(String hostName, int port, String path, String method)
     if (!m_client.connect(hostName.c_str(), port)) 
     {
       m_client.stop();
+      m_connected = false;
       return;
     }
 
@@ -274,7 +287,7 @@ void ThinkDevice::request(String hostName, int port, String path, String method)
 }
 
 
-void ThinkDevice::get(String path, String name, String value)
+void ThinkDevice::patch_helper(String path, String name, String value)
 {
   String fullPath;
   
@@ -287,7 +300,8 @@ void ThinkDevice::get(String path, String name, String value)
         fullPath += "&name=" + httpEncode(m_deviceName);
     if (m_deviceId != "")
         fullPath += "&deviceId=" + httpEncode(m_deviceId);
-        
+    
+    // patch does not work on ThinkHub so treat as GET instead  
     request(m_hubIp, m_hubPort, fullPath, "GET");
   }
 }
@@ -295,5 +309,10 @@ void ThinkDevice::get(String path, String name, String value)
 
 void ThinkDevice::patch(String name, String value)
 {
-  get("", name, value);
+  patch_helper("", name, value);
+}
+
+bool ThinkDevice::connected()
+{
+  return m_connected;
 }
