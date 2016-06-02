@@ -18,7 +18,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
 */
-   
+
 #include "WebServer.h"
 
 /********************************************************************
@@ -451,6 +451,7 @@ void WebServer::httpSuccess(const char *contentType,
   printCRLF();   // blank line starts body
 }
 
+
 void WebServer::httpSeeOther(const char *otherURL)
 {
   P(seeOtherMsg1) = "HTTP/1.0 303 See Other" CRLF;
@@ -676,7 +677,7 @@ bool WebServer::readPOSTparam(char *name, int nameLen,
       int ch2 = read();
       if (ch1 == -1 || ch2 == -1)
         return false;
-      char hex[3] = { ch1, ch2, '\x0' };
+      char hex[3] = { (char)ch1, (char)ch2, '\x0' };
       ch = strtoul(hex, NULL, 16);
     }
 

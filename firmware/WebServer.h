@@ -36,7 +36,9 @@
 #include <EthernetServer.h>
 #else
 
+#ifndef pgm_read_byte
 #define pgm_read_byte(x) (*((uint8_t*)x))
+#endif
 
 #endif
 

@@ -2,11 +2,17 @@
 #define __THINK_PARTICLE_H_
 
 #include "WebServer.h"
+#include "spark_wiring_timer.h"
 
 class ThinkDevice: public WebServer
 {
 public:
   typedef void ThinkCallback(String name, String value);
+
+  ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback *thinkCallback);
+  void                  patch(String name, String value);
+  void                  process();
+  bool                  connected();
 
 protected:
   TCPClient             m_client;
@@ -36,12 +42,6 @@ protected:
   void                  patch_helper(String path, String name, String value);
   String                directUrl();
   String                deviceConf();
-
-public:
-  ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback *thinkCallback);
-  void                  patch(String name, String value);
-  void                  process();
-  bool                  connected();
 };
 
 

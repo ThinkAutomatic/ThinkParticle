@@ -15,7 +15,7 @@ ThinkDevice *ThinkDevice::s_thinkDevice;
 
 String ThinkDevice::httpEncode(String s)
 {
-  int i;
+  uint i;
   String result = "";
     
   for (i = 0; i < s.length(); i++)
@@ -181,13 +181,13 @@ void ThinkDevice::webLink(WebServer &server, WebServer::ConnectionType type, cha
 
 ThinkDevice::ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback *thinkCallback):
   WebServer(PREFIX, PORT),
-  m_deviceName(deviceName),
   m_deviceId(""),
   m_deviceTypeUuid(deviceTypeUuid),
   m_hubIp(""),
   m_hubPort(0),
   m_timer(15 * 60 * 1000, setKeepAliveFlag)
 {
+  m_deviceName = deviceName;
   m_thinkCallback = thinkCallback;
   addCommand("think", &sWebCmd);
   addCommand("link", &sWebLink);
@@ -200,12 +200,9 @@ ThinkDevice::ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback
 String ThinkDevice::directUrl()
 {
     IPAddress myIp;
-    char rgchDirectUrl[32];
 
-    myIp = WiFi.localIP();
-    sprintf(rgchDirectUrl, "http://%d.%d.%d.%d:%d", myIp[0], myIp[1], myIp[2], myIp[3], PORT);
-    
-    return String(rgchDirectUrl);
+    myIp = spark::WiFi.localIP();
+    return "http://" + myIp[0] + '.' + myIp[1] + '.' + myIp[2] + '.' + myIp[3] + ':' + PORT;
 }
 
 void ThinkDevice::process()
@@ -215,7 +212,7 @@ void ThinkDevice::process()
 
   if (!m_started) 
   {
-    if (WiFi.ready())
+    if (spark::WiFi.ready())
     {
       begin();
       m_started = true;
