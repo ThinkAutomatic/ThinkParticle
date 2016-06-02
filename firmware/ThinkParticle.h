@@ -10,7 +10,7 @@ public:
   typedef void ThinkCallback(String name, String value);
 
   ThinkDevice(String deviceName, String deviceTypeUuid, ThinkCallback *thinkCallback);
-  void                  patch(String name, String value);
+  void                  report(String name, String value);
   void                  process();
   bool                  connected();
 
@@ -39,7 +39,7 @@ protected:
   void                  webLink(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete);
   
   void                  request(String hostName, int port, String path, String method);
-  void                  patch_helper(String path, String name, String value);
+  void                  patch(String path, String name, String value);
   String                directUrl();
   String                deviceConf();
 };

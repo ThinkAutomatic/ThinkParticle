@@ -147,8 +147,7 @@ void ThinkDevice::webLink(WebServer &server, WebServer::ConnectionType type, cha
       {
         if (String(name) == "linkToken")
         {
-          patch_helper("link", name, value);
-          // patch(name, value);
+          patch("link", name, value);
           success = true;
         }
         else if (String(name) == "successRedirect")
@@ -233,7 +232,7 @@ void ThinkDevice::process()
       else 
       {
         // Sends keepAlive
-        patch("", "");
+        report("", "");
       }
     }
   }
@@ -284,7 +283,7 @@ void ThinkDevice::request(String hostName, int port, String path, String method)
 }
 
 
-void ThinkDevice::patch_helper(String path, String name, String value)
+void ThinkDevice::patch(String path, String name, String value)
 {
   String fullPath;
   
@@ -298,15 +297,14 @@ void ThinkDevice::patch_helper(String path, String name, String value)
     if (m_deviceId != "")
         fullPath += "&deviceId=" + httpEncode(m_deviceId);
     
-    // patch does not work on ThinkHub so treat as GET instead  
     request(m_hubIp, m_hubPort, fullPath, "GET");
   }
 }
 
 
-void ThinkDevice::patch(String name, String value)
+void ThinkDevice::report(String name, String value)
 {
-  patch_helper("", name, value);
+  patch("", name, value);
 }
 
 bool ThinkDevice::connected()

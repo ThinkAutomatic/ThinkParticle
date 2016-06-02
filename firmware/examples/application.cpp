@@ -84,7 +84,7 @@ void loop()
   if ((digitalRead(button) == LOW) && !buttonPressed) 
   {
       buttonPressed = TRUE;
-      thinkDevice.patch("Button", "activate");
+      thinkDevice.report("Button", "activate");
   }
   else if ((digitalRead(button) == HIGH) && buttonPressed)
   {
