@@ -202,7 +202,7 @@ String ThinkDevice::directUrl()
     IPAddress myIp;
 
     myIp = spark::WiFi.localIP();
-    return "http://" + myIp[0] + '.' + myIp[1] + '.' + myIp[2] + '.' + myIp[3] + ':' + PORT;
+    return String("http://") + myIp[0] + '.' + myIp[1] + '.' + myIp[2] + '.' + myIp[3] + ':' + PORT;
 }
 
 void ThinkDevice::process()
